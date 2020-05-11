@@ -1,8 +1,8 @@
 .. raw:: html
 
-  <h2 align="center">
+  <h1 align="center">
     hswfs: A virtual Hartmann-Shack wavefront sensor
-  </h2>
+  </h1>
   <p align="center">
     <img src="https://img.shields.io/badge/python-v3.7-blue" alt="Python 3.7">
     <img src="https://img.shields.io/badge/license-MIT-green" alt="License: MIT">
@@ -40,5 +40,5 @@ Here are the first 15 Zernike polynomials, as computed by hswfs:
 .. raw:: html
 
   <p align="center">
-    <img src="./demo/zernike_polynomials.png" alt="Zernike Polynomials">
+    <img src="./demo/zernike_polynomials.png" alt="Zernike Polynomials" width="600">
   </p>
