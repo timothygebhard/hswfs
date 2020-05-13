@@ -1,0 +1,5 @@
+mypy>=0.770
+pytest>=5.4.2
+sphinx>=3.0.3
+sphinx-rtd-theme>=0.4.3
+sphinxcontrib-napoleon>=0.7
