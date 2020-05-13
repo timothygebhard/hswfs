@@ -47,13 +47,39 @@ def crop_center(array: np.ndarray,
     return array[tuple(slices)]
 
 
+def get_subaperture_centers(
+    grid_size: int,
+) -> Tuple[np.ndarray, np.ndarray]:
+    """
+    Compute the positions of the centers of the subapertures of the
+    sensor. This assumes a simple geometry, where the sensor is taken
+    to be the largest square that can fit inside the unit circle, and
+    consists of a grid of `grid_size` x `grid_size` subapertures.
+
+    Args:
+        grid_size:  An integer specifying the size of the (quadratic)
+            grid of subapertures in the HSWFS sensor.
+
+    Returns:
+        A mesh grid, consisting of two numpy arrays which specify the
+        `x` and `y` positions of the centers of the subapertures.
+    """
+
+    x = np.linspace((1 / grid_size - 1), (1 - 1 / grid_size), grid_size)
+    x = 1 / np.sqrt(2) * np.repeat(x.reshape(1, -1), grid_size, axis=0)
+    y = np.linspace((1 - 1 / grid_size), (1 / grid_size - 1), grid_size)
+    y = 1 / np.sqrt(2) * np.repeat(y.reshape(-1, 1), grid_size, axis=1)
+
+    return x, y
+
+
 def get_unit_disk_meshgrid(
     resolution: int,
 ) -> Tuple[np.array, np.array]:
     """
     Get a (Cartesian) mesh grid of positions on the unit disk, that is,
     all positions with with a Euclidean distance <= 1 from (0, 0).
- 
+
     Args:
         resolution: An integer specifying the size of the mesh grid,
             that is, the number of points in each dimensions.
