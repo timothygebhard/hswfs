@@ -51,7 +51,7 @@ if __name__ == '__main__':
             ax.set_title(rf'$Z^{{{m}}}_{{{n}}}$', fontsize=4, pad=4)
             ax.axis('off')
 
-            print(f'Done!', flush=True)
+            print('Done!', flush=True)
 
     # Final plot options; save as PNG
     plt.tight_layout(h_pad=0.1, w_pad=0.1)
