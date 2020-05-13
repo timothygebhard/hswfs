@@ -151,8 +151,8 @@ def generate_test_shifts(
         shifts = np.array([x_sign * x_shift, y_sign * y_shift])
         shifts = np.moveaxis(shifts, 0, -1)
 
-        # Normalize such that max(shifts) == 1
-        shifts /= np.max(shifts)
+        # Normalize such that max(shifts) == 1/2
+        shifts /= np.max(shifts) * 2
 
     # Raise an error for all other values of
     else:
