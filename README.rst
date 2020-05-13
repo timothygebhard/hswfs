@@ -21,7 +21,7 @@ It is commonly used in the `adaptive optics systems <https://en.wikipedia.org/wi
 
 
 ⚡ Quickstart
--------------
+------------
 
 To get started, clone this repository and install hswfs as a Python package:
 
@@ -30,20 +30,6 @@ To get started, clone this repository and install hswfs as a Python package:
    git clone git@github.com:timothygebhard/hswfs.git
    cd hswfs
    pip install .
-
-
-📚 Documentation
-----------------
-
-The documentation can be build by running
-
-.. code-block:: bash
-
-   make html
-
-in the ``docs`` folder.
-This will create a ``build`` folder in the ``docs`` directory which contains an HTML version of the documentation.
-
 
 🔭 Example
 ----------
@@ -59,12 +45,39 @@ Here is an example result, showing a virtual wavefront sensor with the shifts me
 This example was created by the ``hswfs_example.py`` script in the ``demo`` directory.
 
 
+📚 Documentation
+----------------
+
+The documentation can be build by running the following command in the ``docs`` folder:
+
+.. code-block:: bash
+
+   make html
+
+This will create a ``build`` folder in the ``docs`` directory which contains an HTML version of the documentation.
+
+
+🐭 Tests
+--------
+
+hswfs comes with a series of unit tests, which can be run as follows:
+
+.. code-block:: bash
+
+   pytest tests
+
+
+🎁 Contributing to hswfs
+------------------------
+
+Contributions are always very welcome!
+Whether you have found a bug, or want to enhance hswfs's functionality, please feel free to open an issue here on GitHub, or send a pull request.
+
+
 ⚠️ License and Warranty
--------------------------
+-----------------------
 
 hswfs is provided under the permissive `MIT License <https://github.com/timothygebhard/hswfs/blob/master/LICENSE>`_, which gives you a lot of freedom to use it for your own work.
 
 Please note, however, that hswfs is provided *as is*, without any guarantees regarding completeness or correctness.
 If you break your telescope or AO system, that's on you! 😉
-
-However, if you do find a bug, or want to enhance hswfs's functionality, you are very welcome to open an issue or send a pull request.
