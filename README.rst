@@ -32,13 +32,39 @@ To get started, clone this repository and install hswfs as a Python package:
    pip install .
 
 
+📚 Documentation
+----------------
+
+The documentation can be build by running
+
+.. code-block:: bash
+
+   make html
+
+in the ``docs`` folder.
+This will create a ``build`` folder in the ``docs`` directory which contains an HTML version of the documentation.
+
+
 🔭 Example
 ----------
 
-Here are the first 15 Zernike polynomials, as computed by hswfs:
+Here is an example result, showing a virtual wavefront sensor with the shifts measured in each subaperture, and the respective reconstructed wavefront and point spread function:
 
 .. raw:: html
 
   <p align="center">
-    <img src="./demo/zernike_polynomials.png" alt="Zernike Polynomials" width="600">
+    <img src="./demo/example_result.png" alt="Example Results" width="600">
   </p>
+
+This example was created by the ``hswfs_example.py`` script in the ``demo`` directory.
+
+
+⚠️ License and Warranty
+-------------------------
+
+hswfs is provided under the permissive `MIT License <https://github.com/timothygebhard/hswfs/blob/master/LICENSE>`_, which gives you a lot of freedom to use it for your own work.
+
+Please note, however, that hswfs is provided *as is*, without any guarantees regarding completeness or correctness.
+If you break your telescope or AO system, that's on you! 😉
+
+However, if you do find a bug, or want to enhance hswfs's functionality, you are very welcome to open an issue or send a pull request.
