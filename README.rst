@@ -5,7 +5,12 @@
   </h1>
   <p align="center">
     <img src="https://img.shields.io/badge/python-v3.7-blue" alt="Python 3.7">
-    <img src="https://img.shields.io/badge/license-MIT-green" alt="License: MIT">
+    <a href="https://hswfs.readthedocs.io/en/latest/?badge=latest">
+        <img src='https://readthedocs.org/projects/hswfs/badge/?version=latest' alt='Documentation Status' />
+    </a>
+    <a href="https://github.com/timothygebhard/hswfs/blob/master/LICENSE">
+        <img src="https://img.shields.io/badge/license-MIT-green" alt="License: MIT">
+    </a>
   </p>
 
 hswfs is a Python package which provides a minimalistic simulation of a `Hartmann-Shack Wavefront Sensor <https://en.wikipedia.org/wiki/Shack%E2%80%93Hartmann_wavefront_sensor>`_.
@@ -21,7 +26,7 @@ It is commonly used in the `adaptive optics systems <https://en.wikipedia.org/wi
 
 
 ⚡ Quickstart
-------------
+-------------
 
 To get started, clone this repository and install hswfs as a Python package:
 
@@ -30,6 +35,7 @@ To get started, clone this repository and install hswfs as a Python package:
    git clone git@github.com:timothygebhard/hswfs.git
    cd hswfs
    pip install .
+
 
 🔭 Example
 ----------
@@ -43,18 +49,13 @@ Here is an example result, showing a virtual wavefront sensor with the shifts me
   </p>
 
 This example was created by the ``hswfs_example.py`` script in the ``demo`` directory.
+This script should provide a good starting point to familiarize yourself with the functionality of hswfs.
 
 
 📚 Documentation
 ----------------
 
-The documentation can be build by running the following command in the ``docs`` folder:
-
-.. code-block:: bash
-
-   make html
-
-This will create a ``build`` folder in the ``docs`` directory which contains an HTML version of the documentation.
+The documentation for hswfs is available on `ReadTheDocs <https://hswfs.readthedocs.io/en/latest/>`_.
 
 
 🐭 Tests
@@ -67,10 +68,10 @@ hswfs comes with a series of unit tests, which can be run as follows:
    pytest tests
 
 
-🎁 Contributing to hswfs
-------------------------
+🎉 Contributions
+----------------
 
-Contributions are always very welcome!
+Contributions to hswfs are always very welcome!
 Whether you have found a bug, or want to enhance hswfs's functionality, please feel free to open an issue here on GitHub, or send a pull request.
 
 
