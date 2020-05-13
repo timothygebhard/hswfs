@@ -50,12 +50,12 @@ if __name__ == '__main__':
          '    y: Union[float, ndarray],'
          '    wrt: Union[str, Symbol]) -> Union[float, ndarray]:',
          '    r"""',
-         '    Evaluate the Cartesian derivative of a the Zernike polynomial ',
+         '    Evaluate the Cartesian derivative of a the Zernike polynomial',
          '    :math:`Z^m_n` at the position(s) `x`, `y`. Fast.',
          '',
          '    Args:',
          '        m: Index :math:`m` of :math:`Z^m_n`.',
-         '        n: Index :math:`n` of :math:`Z^m_n`. ',
+         '        n: Index :math:`n` of :math:`Z^m_n`.',
          '            Default maximum value is :math:`n_\\text{max} = 15`.',
          '        x: The x-coordinate(s) at which to evaluate the derivative.',
          '        y: The y-coordinate(s) at which to evaluate the derivative.',
@@ -63,7 +63,7 @@ if __name__ == '__main__':
          '            which variable the derivative is taken: `"x"` or `"y"`.',
          '',
          '    Returns:',
-         '        The value(s) of the derivative of :math:`Z^m_n` with ',
+         '        The value(s) of the derivative of :math:`Z^m_n` with',
          '        respect to `wrt` at the given position(s) `x`, `y`.',
          '    """\n']
 
@@ -115,7 +115,7 @@ if __name__ == '__main__':
     code = '\n'.join(lines)
 
     # Run black on that string to automatically format it
-    code = black.format_str(code, mode=black.FileMode(line_length=80))
+    code = black.format_str(code, mode=black.FileMode(line_length=79))
 
     # Store the result as a Python file in the hswfs package directory
     with open('../hswfs/fast_zernike.py', 'w') as python_file:

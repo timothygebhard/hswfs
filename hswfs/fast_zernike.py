@@ -31,12 +31,12 @@ def zernike_derivative_cartesian(
     wrt: Union[str, Symbol],
 ) -> Union[float, ndarray]:
     r"""
-    Evaluate the Cartesian derivative of a the Zernike polynomial 
+    Evaluate the Cartesian derivative of a the Zernike polynomial
     :math:`Z^m_n` at the position(s) `x`, `y`. Fast.
 
     Args:
         m: Index :math:`m` of :math:`Z^m_n`.
-        n: Index :math:`n` of :math:`Z^m_n`. 
+        n: Index :math:`n` of :math:`Z^m_n`.
             Default maximum value is :math:`n_\text{max} = 15`.
         x: The x-coordinate(s) at which to evaluate the derivative.
         y: The y-coordinate(s) at which to evaluate the derivative.
@@ -44,7 +44,7 @@ def zernike_derivative_cartesian(
             which variable the derivative is taken: `"x"` or `"y"`.
 
     Returns:
-        The value(s) of the derivative of :math:`Z^m_n` with 
+        The value(s) of the derivative of :math:`Z^m_n` with
         respect to `wrt` at the given position(s) `x`, `y`.
     """
 
@@ -305,13 +305,23 @@ def zernike_derivative_cartesian(
         return (
             sqrt(7)
             * x
-            * (-120 * x ** 2 - 120 * y ** 2 + 120 * (x ** 2 + y ** 2) ** 2 + 24)
+            * (
+                -120 * x ** 2
+                - 120 * y ** 2
+                + 120 * (x ** 2 + y ** 2) ** 2
+                + 24
+            )
         )
     if m == 0 and n == 6 and wrt == "y":
         return (
             sqrt(7)
             * y
-            * (-120 * x ** 2 - 120 * y ** 2 + 120 * (x ** 2 + y ** 2) ** 2 + 24)
+            * (
+                -120 * x ** 2
+                - 120 * y ** 2
+                + 120 * (x ** 2 + y ** 2) ** 2
+                + 24
+            )
         )
 
     # Derivatives for j = 25
@@ -1860,7 +1870,10 @@ def zernike_derivative_cartesian(
             * sqrt(6)
             * (x ** 2 + y ** 2) ** (7 / 2)
             * (
-                -9 * x * (11 * x ** 2 + 11 * y ** 2 - 10) * sin(9 * atan2(y, x))
+                -9
+                * x
+                * (11 * x ** 2 + 11 * y ** 2 - 10)
+                * sin(9 * atan2(y, x))
                 + y * (121 * x ** 2 + 121 * y ** 2 - 90) * cos(9 * atan2(y, x))
             )
         )
