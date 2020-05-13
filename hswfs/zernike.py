@@ -459,7 +459,7 @@ class Wavefront:
 
     def __init__(self,
                  coefficients: Union[Sequence[float], Dict[int, float]]):
-        
+
         # Store constructor arguments
         self.coefficients = coefficients
 
@@ -489,5 +489,5 @@ class Wavefront:
             A `sy.Expr` containing the Cartesian representation of the
             wavefront.
         """
-        
+
         return polar_to_cartesian(self.polar)

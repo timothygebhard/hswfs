@@ -65,7 +65,7 @@ def plot_shifts(
 
     # Add a red circle indicating the unit disk
     ax.add_artist(plt.Circle((0, 0), 1, color='red', ls='--', fill=False))
- 
+
     # Determine a shrinkage factor to map the relative shifts into the right
     # reference frame (i.e., scale to the size of a subaperture in the plot)
     factor = np.sqrt(2) / grid_size / 2
