@@ -124,14 +124,6 @@ def derive(
             Can either be a `sy.Symbol` or a string containing the name
             of the variable.
 
-    Raises:
-        ValueError: If the free symbols of `expression` do not contain
-            a matching symbol for `wrt`, a `ValueError` is raised:
-            taking  the derivative of an expression w.r.t. a variable
-            that is not contained in the expression is always 0, but
-            that is _usually_ not the expected result when using this
-            function.
-
     Returns:
         The derivative of `expression` with respect to `wrt` as a
         `sy.Expr`.
@@ -150,9 +142,8 @@ def derive(
             if wrt == symbol.name:
                 return sy.diff(expression, symbol)
 
-    # In every other case, we raise a value error
-    raise ValueError(f'Can\'t derive expression w.r.t "{wrt}": '
-                     f'symbol does not exist in expression!')
+    # In every other case, the derivative is simply 0
+    return sy.sympify(0)
 
 
 def is_cartesian(
@@ -322,10 +313,11 @@ class ZernikePolynomial:
         The azimuthal component of :math:`Z^m_n`, which is given by:
 
         .. math::
-            \Phi_m ( \phi ) = \begin{cases}
-                                \cos( m \, \phi ) & m \geq 0 \\
-                                \sin( m \, \phi ) & m < 0
-                              \end{cases}
+            \Phi_m ( \phi ) =
+                \begin{cases}
+                    \cos( m \, \phi ) & \text{for}\ m \geq 0 \\
+                    \sin( m \, \phi ) & \text{for}\ m < 0
+                \end{cases}
 
         Returns:
             The azimuthal part of :math:`Z^m_n` as a `sympy.Expr`.
@@ -352,6 +344,12 @@ class ZernikePolynomial:
         .. math::
             \int_0^1 d\rho \int_0^{2\pi}d\phi \
             Z^2(\rho, \phi) \, \rho = \pi
+
+        .. note::
+            Note that this choice of normalization is not universal,
+            and that some authors choose different normalizations;
+            for example, they normalize the above integral to 1
+            instead of :math:`\pi`.
 
         Returns:
             The normalization factor of :math:`Z^m_n` as a `sy.Expr`.
@@ -422,7 +420,7 @@ class ZernikePolynomial:
             factor_2 = (sy.sqrt(2) * sy.Pow(-1, (self.n + self.m) / 2) *
                         sy.Pow(sy.I, -self.m) * sy.sin(-self.m * k2))
 
-        return factor_1 * factor_2
+        return sy.nsimplify(sy.simplify(factor_1 * factor_2))
 
 
 class Wavefront:
