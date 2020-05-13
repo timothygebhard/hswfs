@@ -2,7 +2,7 @@ References
 ==========
 
 Functions and methods in this packages are (partially) based on the following
-research papers:
+books and research papers:
 
 .. [Cubalchini_1979]
    Cubalchini, R. (1979):
