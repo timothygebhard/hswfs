@@ -1,5 +1,5 @@
 """
-This module contains functions to generate shift grids to be used with
+This module provides functions to generate shift grids to be used with
 the HSWFS class.
 """
 
