@@ -5,6 +5,9 @@
   </h1>
   <p align="center">
     <img src="https://img.shields.io/badge/python-v3.7-blue" alt="Python 3.7">
+    <a href="https://github.com/timothygebhard/hswfs/actions?query=workflow%3ATests">
+      <img src="https://github.com/timothygebhard/hswfs/workflows/Tests/badge.svg?branch=master">
+    </a>
     <a href="https://hswfs.readthedocs.io/en/latest/?badge=latest">
         <img src='https://readthedocs.org/projects/hswfs/badge/?version=latest' alt='Documentation Status' />
     </a>
