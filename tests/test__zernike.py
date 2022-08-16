@@ -8,7 +8,7 @@ Unit tests for functions in zernike.py
 
 import sympy as sy
 
-from hswfs.zernike import mn_to_j, j_to_mn, ZernikePolynomial
+from hswfs.zernike import mn_to_j, j_to_mn, ZernikePolynomial, derive
 
 
 # -----------------------------------------------------------------------------
@@ -131,6 +131,12 @@ def test__zernike_polynomial() -> None:
     zernike = ZernikePolynomial(m=3, n=3)
     expected = sy.sqrt(8) * rho**3 * sy.cos(3 * phi)
     assert sy.simplify(zernike.polar - expected) == 0
+
+    # Extra case to make sure we don't get complex infinities that break the
+    # derivatives. See https://github.com/timothygebhard/hswfs/issues/1.
+    zernike = ZernikePolynomial(m=-5, n=5)
+    derivative = derive(zernike.cartesian, wrt='x')
+    assert derivative != 0
 
 
 def test__zernike_fourier_transform() -> None:
