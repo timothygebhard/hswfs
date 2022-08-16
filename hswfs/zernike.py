@@ -139,7 +139,7 @@ def derive(
     # w.r.t. to this symbol
     elif isinstance(wrt, str):
         for symbol in expression.free_symbols:
-            if wrt == symbol.name:
+            if wrt == symbol.name:  # type: ignore
                 return sy.diff(expression, symbol)
 
     # In every other case, the derivative is simply 0
@@ -160,7 +160,8 @@ def is_cartesian(
         True if `expression` is in Cartesian coordinates; else False.
     """
 
-    return {_.name for _ in expression.free_symbols}.issubset({'x', 'y'})
+    symbols = {_.name for _ in expression.free_symbols}  # type: ignore
+    return symbols.issubset({'x', 'y'})
 
 
 def is_polar(
@@ -177,7 +178,8 @@ def is_polar(
         True if `expression` is in polar coordinates; else False.
     """
 
-    return {_.name for _ in expression.free_symbols}.issubset({'rho', 'phi'})
+    symbols = {_.name for _ in expression.free_symbols}  # type: ignore
+    return symbols.issubset({'rho', 'phi'})
 
 
 def eval_cartesian(
