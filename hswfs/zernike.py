@@ -304,10 +304,14 @@ class ZernikePolynomial:
 
         # Otherwise, things are a little more complicated
         else:
-            return sum(sy.Pow(-1, k) * sy.binomial(self.n - k, k) *
-                       sy.binomial(self.n - 2 * k, (self.n - self.m) / 2 - k) *
-                       sy.Pow(rho, self.n - 2 * k)
-                       for k in range(0, int((self.n - self.m) / 2) + 1))
+            return sum(
+                sy.Pow(-1, k) * sy.binomial(int(self.n - k), int(k)) *
+                sy.binomial(
+                    int(self.n - 2 * k), int((self.n - self.m) / 2 - k)
+                ) *
+                sy.Pow(rho, self.n - 2 * k)
+                for k in range(0, int((self.n - self.m) / 2) + 1)
+            )
 
     @property
     def azimuthal_part(self) -> sy.Expr:
