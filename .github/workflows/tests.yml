@@ -39,10 +39,10 @@ jobs:
         pip install .
     - name: Run mypy (package)
       run: |
-        mypy -p hswfs
+        python -m mypy -p hswfs
     - name: Run mypy (tests)
       run: |
-        mypy tests/
+        python -m mypy tests
     - name: Run pytest
       run: |
         pytest --cov-report term-missing --cov=hswfs --verbose
