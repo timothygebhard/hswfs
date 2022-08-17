@@ -118,10 +118,13 @@ def derive(expression: sy.Expr, wrt: Union[str, sy.Symbol]) -> sy.Expr:
         The derivative of `expression` with respect to `wrt`.
     """
 
+    # Define type hint for the result
+    derivative: sy.Expr
+
     # If wrt is a sympy symbol, and is part of the expression's free symbols,
     # we can directly take the derivative of the expression w.r.t. wrt
     if isinstance(wrt, sy.Symbol) and (wrt in expression.free_symbols):
-        return sy.diff(expression, wrt)  # type: ignore
+        derivative = sy.diff(expression, wrt)
 
     # If wrt is a string, we check if there is a symbol in the free symbols of
     # the expression whose name matches wrt, and then we take the derivative
@@ -129,10 +132,18 @@ def derive(expression: sy.Expr, wrt: Union[str, sy.Symbol]) -> sy.Expr:
     elif isinstance(wrt, str):
         for symbol in expression.free_symbols:
             if wrt == symbol.name:  # type: ignore
-                return sy.diff(expression, symbol)  # type: ignore
+                derivative = sy.diff(expression, symbol)
+                break
+        else:
+            raise ValueError(
+                f"Can't differentiate {expression} w.r.t. {wrt} - not found!"
+            )
 
     # In every other case, the derivative is simply 0
-    return sy.sympify(0)  # type: ignore
+    else:
+        derivative = sy.sympify(0)
+
+    return derivative
 
 
 def is_cartesian(expression: sy.Expr) -> bool:
@@ -239,7 +250,6 @@ def eval_cartesian(
 # CLASSES
 # -----------------------------------------------------------------------------
 
-
 class ZernikePolynomial:
     """
     Implements the Zernike polynomial :math:`Z^m_n` (in double-index
@@ -296,13 +306,16 @@ class ZernikePolynomial:
         # Define a symbol for the radius (rho)
         rho = sy.Symbol("rho")
 
+        # Define type hint for the result
+        result: sy.Expr
+
         # If n - m is odd, the radial polynomial is simply 0
         if (self.n - self.m) % 2 == 1:
-            return sy.sympify(0)  # type: ignore
+            result = sy.sympify(0)
 
         # Otherwise, things are a little more complicated
         else:
-            return sum(  # type: ignore
+            result = sum(
                 sy.Pow(-1, k)
                 * sy.binomial(int(self.n - k), int(k))
                 * sy.binomial(
@@ -311,6 +324,8 @@ class ZernikePolynomial:
                 * sy.Pow(rho, self.n - 2 * k)
                 for k in range(0, int((self.n - self.m) / 2) + 1)
             )
+
+        return result
 
     @property
     def azimuthal_part(self) -> sy.Expr:
@@ -331,16 +346,21 @@ class ZernikePolynomial:
         # Define a symbol for the azimuthal angle (phi)
         phi = sy.Symbol("phi")
 
+        # Define type hint for the result
+        result: sy.Expr
+
         # Return the azimuthal part, which depends only on the value of m
         if self.m > 0:
-            return sy.cos(self.m * phi)  # type: ignore
+            result = sy.cos(self.m * phi)
         elif self.m < 0:
-            return sy.sin(-self.m * phi)  # type: ignore
+            result = sy.sin(-self.m * phi)
         else:
-            return sy.sympify(1)  # type: ignore
+            result = sy.sympify(1)
+
+        return result
 
     @property
-    def normalization(self) -> sy.core.power.Pow:
+    def normalization(self) -> sy.Expr:
         r"""
         The normalization factor of :math:`Z^m_n`.
 
@@ -360,10 +380,15 @@ class ZernikePolynomial:
             The normalization factor of :math:`Z^m_n`.
         """
 
+        # Define type hint for the result
+        result: sy.Expr
+
         if self.m == 0:
-            return sy.sqrt(self.n + 1)  # type: ignore
+            result = sy.sqrt(self.n + 1)
         else:
-            return sy.sqrt(self.n + 1) * sy.sqrt(2)  # type: ignore
+            result = sy.sqrt(self.n + 1) * sy.sqrt(2)
+
+        return result
 
     @property
     def polar(self) -> sy.Expr:
@@ -374,9 +399,11 @@ class ZernikePolynomial:
         Returns:
             The Zernike polynomial :math:`Z^m_n(\rho, \phi)`.
         """
-        return (  # type: ignore
+
+        result: sy.Expr = (
             self.normalization * self.radial_part * self.azimuthal_part
         )
+        return result
 
     @property
     def cartesian(self) -> sy.Expr:
@@ -437,7 +464,8 @@ class ZernikePolynomial:
                 * sy.sin(-self.m * k2)
             )
 
-        return sy.nsimplify(sy.simplify(factor_1 * factor_2))  # type: ignore
+        result: sy.Expr = sy.nsimplify(sy.simplify(factor_1 * factor_2))
+        return result
 
 
 class Wavefront:
@@ -485,16 +513,21 @@ class Wavefront:
         Get the polar representation of the wavefront.
         """
 
+        # Define type hint for the result
+        result: sy.Expr
+
         if isinstance(self.coefficients, dict):
-            return sum(  # type: ignore
+            result = sum(
                 coefficient * ZernikePolynomial(j=j).polar
                 for j, coefficient in self.coefficients.items()
             )
         else:
-            return sum(  # type: ignore
+            result = sum(
                 coefficient * ZernikePolynomial(j=j).polar
                 for j, coefficient in enumerate(self.coefficients)
             )
+
+        return result
 
     @property
     def cartesian(self) -> sy.Expr:
