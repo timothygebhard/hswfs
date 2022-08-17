@@ -96,8 +96,8 @@ def polar_to_cartesian(
     """
 
     # Define symbols for polar and cartesian coordinates
-    rho, phi = sy.symbols('rho'), sy.symbols('phi')
-    x, y = sy.symbols('x'), sy.symbols('y')
+    rho, phi = sy.symbols("rho"), sy.symbols("phi")
+    x, y = sy.symbols("x"), sy.symbols("y")
 
     # Define coordinate transformation between polar and cartesian
     substitute_rho = sy.sqrt(x**2 + y**2)
@@ -111,10 +111,7 @@ def polar_to_cartesian(
     return result
 
 
-def derive(
-    expression: sy.Expr,
-    wrt: Union[str, sy.Symbol]
-) -> sy.Expr:
+def derive(expression: sy.Expr, wrt: Union[str, sy.Symbol]) -> sy.Expr:
     """
     Compute the derivative of `expression` with respect to `wrt`.
 
@@ -139,16 +136,15 @@ def derive(
     # w.r.t. to this symbol
     elif isinstance(wrt, str):
         for symbol in expression.free_symbols:
-            if wrt == symbol.name:  # type: ignore
-                return sy.diff(expression, symbol)
+            if hasattr(symbol, 'name'):  # this is needed for mypy
+                if wrt == symbol.name:
+                    return sy.diff(expression, symbol)
 
     # In every other case, the derivative is simply 0
     return sy.sympify(0)
 
 
-def is_cartesian(
-    expression: sy.Expr
-) -> bool:
+def is_cartesian(expression: sy.Expr) -> bool:
     """
     Check if a given `expression` is in Cartesian coordinates, that is,
     if the names of its free symbols are a subset of `{"x", "y"}`.
@@ -160,13 +156,14 @@ def is_cartesian(
         True if `expression` is in Cartesian coordinates; else False.
     """
 
-    symbols = {_.name for _ in expression.free_symbols}  # type: ignore
-    return symbols.issubset({'x', 'y'})
+    symbols = set()
+    for symbol in expression.free_symbols:
+        if hasattr(symbol, 'name'):
+            symbols.add(symbol.name)
+    return symbols.issubset({"x", "y"})
 
 
-def is_polar(
-    expression: sy.Expr
-) -> bool:
+def is_polar(expression: sy.Expr) -> bool:
     """
     Check if a given `expression` is in polar coordinates, that is, if
     the names of its free symbols are a subset of `{"rho", "phi"}`.
@@ -178,8 +175,11 @@ def is_polar(
         True if `expression` is in polar coordinates; else False.
     """
 
-    symbols = {_.name for _ in expression.free_symbols}  # type: ignore
-    return symbols.issubset({'rho', 'phi'})
+    symbols = set()
+    for symbol in expression.free_symbols:
+        if hasattr(symbol, 'name'):
+            symbols.add(symbol.name)
+    return symbols.issubset({"rho", "phi"})
 
 
 def eval_cartesian(
@@ -208,25 +208,30 @@ def eval_cartesian(
     """
 
     # Make sure that expression is a function of Cartesian coordinates
-    assert is_cartesian(expression), \
-        '"expression" is not in Cartesian coordinates!'
+    assert is_cartesian(
+        expression
+    ), '"expression" is not in Cartesian coordinates!'
 
     # Make sure that x_0 and y_0 have compatible shapes
-    assert ((isinstance(x_0, float) and isinstance(y_0, float)) or
-            (isinstance(x_0, np.ndarray) and isinstance(y_0, np.ndarray) and
-             x_0.shape == y_0.shape)), \
-        '"x_0" and "y_0" must be either both float, or both numpy array ' \
-        'with the same shape!'
+    assert (isinstance(x_0, float) and isinstance(y_0, float)) or (
+        isinstance(x_0, np.ndarray)
+        and isinstance(y_0, np.ndarray)
+        and x_0.shape == y_0.shape
+    ), (
+        '"x_0" and "y_0" must be either both float, or both numpy array '
+        "with the same shape!"
+    )
 
     # If the expression is not constant, we can use sympy.lambdify() to
     # generate a numpy version of the expression, which can be used to
     # evaluate the function efficiently:
     if not expression.is_constant():
 
-        numpy_func: Callable[..., Union[float, np.ndarray]] = \
-            sy.utilities.lambdify(args=sy.symbols('x, y'),
-                                  expr=expression,
-                                  modules='numpy')
+        numpy_func: Callable[
+            ..., Union[float, np.ndarray]
+        ] = sy.utilities.lambdify(
+            args=sy.symbols("x, y"), expr=expression, modules="numpy"
+        )
 
     # Otherwise, that is, if the expression is constant, we need to define
     # the evaluation function manually because the result of sympy.lambdify()
@@ -237,6 +242,7 @@ def eval_cartesian(
         # in the input also is NaN in the output; non-NaN values are unchanged
         def numpy_func(_: float, __: float) -> float:
             return float(expression) * _ / _ * __ / __
+
         numpy_func = np.vectorize(numpy_func)
 
     return numpy_func(x_0, y_0)
@@ -246,20 +252,25 @@ def eval_cartesian(
 # CLASSES
 # -----------------------------------------------------------------------------
 
+
 class ZernikePolynomial:
     """
     Implements the Zernike polynomial :math:`Z^m_n` (in double-index
     notation), or :math:`Z_j` (in single-index notation).
     """
 
-    def __init__(self,
-                 m: Optional[int] = None,
-                 n: Optional[int] = None,
-                 j: Optional[int] = None):
+    def __init__(
+        self,
+        m: Optional[int] = None,
+        n: Optional[int] = None,
+        j: Optional[int] = None,
+    ):
 
         # Make sure that we have received *either* (m, n) *or* j
-        error_msg = 'ZernikePolynomial must be instantiated either with ' \
-                    'double indices (m, n) *or* a single index j!'
+        error_msg = (
+            "ZernikePolynomial must be instantiated either with "
+            "double indices (m, n) *or* a single index j!"
+        )
         if j is not None:
             assert m is None, error_msg
             assert n is None, error_msg
@@ -272,13 +283,13 @@ class ZernikePolynomial:
             self.j = mn_to_j(self.m, self.n)
 
         # Run basic sanity checks on inputs
-        assert (-self.n <= self.m <= self.n), \
-            'Zernike polynomials are only defined for -n <= m <= n!'
-        assert self.j >= 0, \
-            'Zernike polynomials are only defined for j >= 0!'
+        assert (
+            -self.n <= self.m <= self.n
+        ), "Zernike polynomials are only defined for -n <= m <= n!"
+        assert self.j >= 0, "Zernike polynomials are only defined for j >= 0!"
 
     def __repr__(self) -> str:
-        return f'Z^{self.m}_{self.n}'
+        return f"Z^{self.m}_{self.n}"
 
     @property
     def radial_part(self) -> sy.Expr:
@@ -296,7 +307,7 @@ class ZernikePolynomial:
         """
 
         # Define a symbol for the radius (rho)
-        rho = sy.Symbol('rho')
+        rho = sy.Symbol("rho")
 
         # If n - m is odd, the radial polynomial is simply 0
         if (self.n - self.m) % 2 == 1:
@@ -305,11 +316,12 @@ class ZernikePolynomial:
         # Otherwise, things are a little more complicated
         else:
             return sum(
-                sy.Pow(-1, k) * sy.binomial(int(self.n - k), int(k)) *
-                sy.binomial(
+                sy.Pow(-1, k)
+                * sy.binomial(int(self.n - k), int(k))
+                * sy.binomial(
                     int(self.n - 2 * k), int((self.n - self.m) / 2 - k)
-                ) *
-                sy.Pow(rho, self.n - 2 * k)
+                )
+                * sy.Pow(rho, self.n - 2 * k)
                 for k in range(0, int((self.n - self.m) / 2) + 1)
             )
 
@@ -330,7 +342,7 @@ class ZernikePolynomial:
         """
 
         # Define a symbol for the azimuthal angle (phi)
-        phi = sy.Symbol('phi')
+        phi = sy.Symbol("phi")
 
         # Return the azimuthal part, which depends only on the value of m
         if self.m > 0:
@@ -409,22 +421,34 @@ class ZernikePolynomial:
         """
 
         # Define symbols for k1 and k2
-        k1 = sy.Symbol('k1')
-        k2 = sy.Symbol('k2')
+        k1 = sy.Symbol("k1")
+        k2 = sy.Symbol("k2")
 
         # Define the first factor, which only depends on n
-        factor_1 = (sy.Pow(-1, self.n) * sy.sqrt(self.n + 1) / (sy.pi * k1) *
-                    sy.besselj(2 * sy.pi * k1, self.n + 1))
+        factor_1 = (
+            sy.Pow(-1, self.n)
+            * sy.sqrt(self.n + 1)
+            / (sy.pi * k1)
+            * sy.besselj(2 * sy.pi * k1, self.n + 1)
+        )
 
         # Define the second factor that also depends on m
         if self.m == 0:
             factor_2 = sy.Pow(-1, self.n / 2)
         elif self.m > 0:
-            factor_2 = (sy.sqrt(2) * sy.Pow(-1, (self.n - self.m) / 2) *
-                        sy.Pow(sy.I, self.m) * sy.cos(self.m * k2))
+            factor_2 = (
+                sy.sqrt(2)
+                * sy.Pow(-1, (self.n - self.m) / 2)
+                * sy.Pow(sy.I, self.m)
+                * sy.cos(self.m * k2)
+            )
         else:
-            factor_2 = (sy.sqrt(2) * sy.Pow(-1, (self.n + self.m) / 2) *
-                        sy.Pow(sy.I, -self.m) * sy.sin(-self.m * k2))
+            factor_2 = (
+                sy.sqrt(2)
+                * sy.Pow(-1, (self.n + self.m) / 2)
+                * sy.Pow(sy.I, -self.m)
+                * sy.sin(-self.m * k2)
+            )
 
         return sy.nsimplify(sy.simplify(factor_1 * factor_2))
 
@@ -463,8 +487,7 @@ class Wavefront:
             things of course will get slower for higher orders.
     """
 
-    def __init__(self,
-                 coefficients: Union[Sequence[float], Dict[int, float]]):
+    def __init__(self, coefficients: Union[Sequence[float], Dict[int, float]]):
 
         # Store constructor arguments
         self.coefficients = coefficients
@@ -480,11 +503,15 @@ class Wavefront:
         """
 
         if isinstance(self.coefficients, dict):
-            return sum(coefficient * ZernikePolynomial(j=j).polar
-                       for j, coefficient in self.coefficients.items())
+            return sum(
+                coefficient * ZernikePolynomial(j=j).polar
+                for j, coefficient in self.coefficients.items()
+            )
         else:
-            return sum(coefficient * ZernikePolynomial(j=j).polar
-                       for j, coefficient in enumerate(self.coefficients))
+            return sum(
+                coefficient * ZernikePolynomial(j=j).polar
+                for j, coefficient in enumerate(self.coefficients)
+            )
 
     @property
     def cartesian(self) -> sy.Expr:

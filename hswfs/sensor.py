@@ -11,8 +11,13 @@ import numpy as np
 import scipy as sp
 
 from hswfs.utils import get_unit_disk_meshgrid
-from hswfs.zernike import derive, eval_cartesian, j_to_mn, Wavefront, \
-    ZernikePolynomial
+from hswfs.zernike import (
+    derive,
+    eval_cartesian,
+    j_to_mn,
+    Wavefront,
+    ZernikePolynomial,
+)
 from hswfs.fast_zernike import zernike_derivative_cartesian
 
 
@@ -33,10 +38,11 @@ class HSWFS:
             in pixels (subapertures are assumed to be quadratic).
     """
 
-    def __init__(self,
-                 relative_shifts: np.ndarray,
-                 aperture_size: int = 32,
-                 ) -> None:
+    def __init__(
+        self,
+        relative_shifts: np.ndarray,
+        aperture_size: int = 32,
+    ) -> None:
 
         # Store constructor arguments
         self.relative_shifts = relative_shifts
@@ -45,9 +51,10 @@ class HSWFS:
         # Store derived properties
         self.grid_size = self.relative_shifts.shape[0]
 
-    def fit_wavefront(self,
-                      n_zernike: int = 9,
-                      ) -> np.ndarray:
+    def fit_wavefront(
+        self,
+        n_zernike: int = 9,
+    ) -> np.ndarray:
         """
         Perform a modal (i.a. Zernike polynomial-based) least squares
         fit to find the wavefront that matches the sensor data. The
@@ -107,8 +114,12 @@ class HSWFS:
 
         # Create p-vector from measured shifts:
         #   (x_shift_1, x_shift_2, ..., x_shift_N, y_shift_1,  ..., y_shift_n)
-        p = np.concatenate((self.relative_shifts[:, :, 0].reshape(n_ap),
-                            self.relative_shifts[:, :, 1].reshape(n_ap)))
+        p = np.concatenate(
+            (
+                self.relative_shifts[:, :, 0].reshape(n_ap),
+                self.relative_shifts[:, :, 1].reshape(n_ap),
+            )
+        )
 
         # ---------------------------------------------------------------------
         # Compute the D matrix of derivatives of Zernike polynomials
@@ -130,18 +141,30 @@ class HSWFS:
 
         # Compute evaluation position (x, y), that is, the relative positions
         # of the centers of the subapertures
-        x_0 = 1 / np.sqrt(2) * np.linspace((1 / self.grid_size - 1),
-                                           (1 - 1 / self.grid_size),
-                                           self.grid_size).reshape(1, -1)
+        x_0 = (
+            1
+            / np.sqrt(2)
+            * np.linspace(
+                (1 / self.grid_size - 1),
+                (1 - 1 / self.grid_size),
+                self.grid_size,
+            ).reshape(1, -1)
+        )
         x_0 = np.repeat(x_0, self.grid_size, axis=0)
-        y_0 = 1 / np.sqrt(2) * np.linspace((1 - 1 / self.grid_size),
-                                           (1 / self.grid_size - 1),
-                                           self.grid_size).reshape(-1, 1)
+        y_0 = (
+            1
+            / np.sqrt(2)
+            * np.linspace(
+                (1 - 1 / self.grid_size),
+                (1 / self.grid_size - 1),
+                self.grid_size,
+            ).reshape(-1, 1)
+        )
         y_0 = np.repeat(y_0, self.grid_size, axis=1)
 
         # We compute the entries of D row by row, because rows correspond to
         # Zernike polynomials
-        for row_idx, j in enumerate(range(1, n_zernike+1)):
+        for row_idx, j in enumerate(range(1, n_zernike + 1)):
 
             # Map single-index j to double-indices m, n
             m, n = j_to_mn(j)
@@ -151,20 +174,25 @@ class HSWFS:
             # module. For even higher orders, the derivatives first need to be
             # computed "on demand", which is a lot slower.
             if j <= 135:
-                x_derivatives: np.ndarray = \
-                    zernike_derivative_cartesian(m, n, x_0, y_0, 'x')
-                y_derivatives: np.ndarray = \
-                    zernike_derivative_cartesian(m, n, x_0, y_0, 'y')
+                x_derivatives = zernike_derivative_cartesian(
+                    m, n, x_0, y_0, "x"
+                )
+                y_derivatives = zernike_derivative_cartesian(
+                    m, n, x_0, y_0, "y"
+                )
             else:
                 zernike_polynomial = ZernikePolynomial(m=m, n=n).cartesian
-                x_derivatives = \
-                    eval_cartesian(derive(zernike_polynomial, 'x'), x_0, y_0)
-                y_derivatives = \
-                    eval_cartesian(derive(zernike_polynomial, 'y'), x_0, y_0)
+                x_derivatives = eval_cartesian(
+                    derive(zernike_polynomial, "x"), x_0, y_0
+                )
+                y_derivatives = eval_cartesian(
+                    derive(zernike_polynomial, "y"), x_0, y_0
+                )
 
             # Store derivatives in D matrix
-            d[row_idx] = np.concatenate((x_derivatives.flatten(),
-                                         y_derivatives.flatten()))
+            d[row_idx] = np.concatenate(
+                (x_derivatives.flatten(), y_derivatives.flatten())
+            )
 
         # ---------------------------------------------------------------------
         # Find the Zernike coefficients by solving a linear equation system
@@ -186,12 +214,13 @@ class HSWFS:
         # Add an additional 0 in the first position for for Z^_0
         a = np.insert(a, 0, 0)
 
-        return a
+        return np.asarray(a)
 
     @staticmethod
-    def get_psf(wavefront: Wavefront,
-                resolution: int = 256,
-                ) -> np.ndarray:
+    def get_psf(
+        wavefront: Wavefront,
+        resolution: int = 256,
+    ) -> np.ndarray:
         r"""
         Compute the point spread function (PSF) that corresponds to the
         given `wavefront`. This needs to happen in discretized form,
@@ -229,15 +258,15 @@ class HSWFS:
 
         # Compute the wavefront on a grid of the given resolution, and cast
         # np.nan to 0, because the FFT cannot deal with NaN
-        wf_grid = eval_cartesian(expression=wavefront.cartesian,
-                                 x_0=x_0,
-                                 y_0=y_0)
+        wf_grid = eval_cartesian(
+            expression=wavefront.cartesian, x_0=x_0, y_0=y_0
+        )
         wf_grid = np.nan_to_num(wf_grid)
 
         # Compute the pupil function. In our simple case, this is simply the
         # unit disk, i.e., it is 1 where the radius is <= 1, and 0 elsewhere
         pupil = np.logical_not(np.logical_or(np.isnan(x_0), np.isnan(y_0)))
-        pupil = pupil.astype(np.float)
+        pupil = pupil.astype(float)
 
         # Define a wavelength lambda
         # FIXME: Proper treatment of wavelength is not yet implemented!
@@ -246,7 +275,7 @@ class HSWFS:
         # Compute the corresponding point spread function (PSF)
         psf = pupil * np.exp(2 * np.pi * 1j / lambda_ * wf_grid)
         psf = np.fft.fft2(psf)
-        psf = np.abs(psf)**2
+        psf = np.abs(psf) ** 2
         psf = np.fft.fftshift(psf) / np.max(psf)
 
-        return psf
+        return np.asarray(psf)

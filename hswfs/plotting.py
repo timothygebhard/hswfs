@@ -30,8 +30,16 @@ def disable_ticks(
         ax: A matplotlib axis.
     """
 
-    ax.tick_params(axis='both', which='both', top=False, bottom=False,
-                   left=False, right=False, labelbottom=False, labelleft=False)
+    ax.tick_params(
+        axis="both",
+        which="both",
+        top=False,
+        bottom=False,
+        left=False,
+        right=False,
+        labelbottom=False,
+        labelleft=False,
+    )
 
 
 def plot_shifts(
@@ -57,14 +65,14 @@ def plot_shifts(
 
     # Draw the grid of subapertures
     for z in np.linspace(-1 / np.sqrt(2), 1 / np.sqrt(2), grid_size + 1):
-        ax.plot((z, z), (-1 / np.sqrt(2), 1 / np.sqrt(2)), color='black')
-        ax.plot((-1 / np.sqrt(2), 1 / np.sqrt(2)), (z, z), color='black')
+        ax.plot((z, z), (-1 / np.sqrt(2), 1 / np.sqrt(2)), color="black")
+        ax.plot((-1 / np.sqrt(2), 1 / np.sqrt(2)), (z, z), color="black")
 
     # Plot the centers of the subapertures
-    ax.plot(x.flatten(), y.flatten(), 'x', ms=4, color='C2', alpha=0.5)
+    ax.plot(x.flatten(), y.flatten(), "x", ms=4, color="C2", alpha=0.5)
 
     # Add a red circle indicating the unit disk
-    ax.add_artist(plt.Circle((0, 0), 1, color='red', ls='--', fill=False))
+    ax.add_artist(plt.Circle((0, 0), 1, color="red", ls="--", fill=False))
 
     # Determine a shrinkage factor to map the relative shifts into the right
     # reference frame (i.e., scale to the size of a subaperture in the plot)
@@ -72,13 +80,16 @@ def plot_shifts(
 
     # Plot the observed position for each subapertures, which differs from the
     # center of the subaperture by the given shift vector
-    ax.plot(x.flatten() + factor * relative_shifts[:, :, 0].flatten(),
-            y.flatten() + factor * relative_shifts[:, :, 1].flatten(),
-            '.', color='C0')
+    ax.plot(
+        x.flatten() + factor * relative_shifts[:, :, 0].flatten(),
+        y.flatten() + factor * relative_shifts[:, :, 1].flatten(),
+        ".",
+        color="C0",
+    )
 
     # Fix the x- and y-limits of the plot
     ax.set_xlim(-1.1, 1.1)
     ax.set_ylim(-1.1, 1.1)
 
     # Fix the aspect ratio of the plot
-    ax.set_aspect('equal')
+    ax.set_aspect("equal")

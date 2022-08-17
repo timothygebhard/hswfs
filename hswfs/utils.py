@@ -15,8 +15,7 @@ import numpy as np
 # FUNCTION DEFINITIONS
 # -----------------------------------------------------------------------------
 
-def crop_center(array: np.ndarray,
-                size: Tuple[int, ...]) -> np.ndarray:
+def crop_center(array: np.ndarray, size: Tuple[int, ...]) -> np.ndarray:
     """
     Crop an n-dimensional array to the given size around its center.
 
@@ -30,8 +29,10 @@ def crop_center(array: np.ndarray,
     """
 
     # Ensure that the the array shape and the size variable match
-    assert array.ndim == len(size), \
-        'Length of size must match number of dimensions of array!'
+    if array.ndim != len(size):
+        raise RuntimeError(
+            "Length of size must match number of dimensions of array!"
+        )
 
     # Loop over the the axes of the array to create slices
     slices = list()
@@ -44,7 +45,7 @@ def crop_center(array: np.ndarray,
         # Create a slice object for axis
         slices.append(slice(start, end))
 
-    return array[tuple(slices)]
+    return np.asarray(array[tuple(slices)])
 
 
 def get_subaperture_centers(
@@ -75,7 +76,7 @@ def get_subaperture_centers(
 
 def get_unit_disk_meshgrid(
     resolution: int,
-) -> Tuple[np.array, np.array]:
+) -> Tuple[np.ndarray, np.ndarray]:
     """
     Get a (Cartesian) mesh grid of positions on the unit disk, that is,
     all positions with with a Euclidean distance <= 1 from (0, 0).
@@ -92,8 +93,9 @@ def get_unit_disk_meshgrid(
     """
 
     # Create a meshgrid of (Cartesian) positions: [-1, 1] x [-1, 1]
-    x_0, y_0 = np.meshgrid(np.linspace(-1, 1, resolution),
-                           np.linspace(-1, 1, resolution))
+    x_0, y_0 = np.meshgrid(
+        np.linspace(-1, 1, resolution), np.linspace(-1, 1, resolution)
+    )
 
     # Create a mask for the unit disk (only select position with radius <= 1)
     unit_disk_mask = np.sqrt(x_0**2 + y_0**2) <= 1

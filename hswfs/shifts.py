@@ -23,7 +23,7 @@ def generate_random_shifts(
     grid_size: int = 16,
     smooth_std: Optional[float] = None,
     random_seed: int = 42,
-) -> np.array:
+) -> np.ndarray:
     r"""
     Create a 2D grid of random shifts (or offsets, or delta) for the
     subapertures of the Hartmann-Shack wavefront sensor.
@@ -156,7 +156,9 @@ def generate_test_shifts(
 
     # Raise an error for all other values of
     else:
-        raise ValueError('test_case must be one of the following: '
-                         '"x_shift", "y_shift", "defocus"!')
+        raise ValueError(
+            'test_case must be one of the following: '
+            '"x_shift", "y_shift", "defocus"!'
+        )
 
     return shifts
