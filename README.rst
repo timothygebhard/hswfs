@@ -4,7 +4,7 @@
     hswfs: A virtual Hartmann-Shack wavefront sensor
   </h1>
   <p align="center">
-    <img src="https://img.shields.io/badge/python-v3.9-blue" alt="Python 3.9">
+    <img src="https://img.shields.io/badge/python-v3.8-blue" alt="Python 3.8">
     <a href="https://github.com/timothygebhard/hswfs/actions?query=workflow%3ATests">
       <img src="https://github.com/timothygebhard/hswfs/workflows/Tests/badge.svg?branch=master">
     </a>
